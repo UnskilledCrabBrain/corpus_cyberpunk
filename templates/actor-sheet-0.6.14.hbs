@@ -1,0 +1,243 @@
+<form class="corpus-sheet corpus-actor-sheet" autocomplete="off">
+  <header class="actor-identity">
+    <img class="profile-img" src="{{document.img}}" data-edit="img" data-action="editImage" title="{{document.name}}" />
+    <div class="identity-fields">
+      <input class="document-name" name="name" type="text" value="{{document.name}}" placeholder="{{localize 'CORPUS.Common.Name'}}" />
+      <div class="identity-meta">
+        <span class="actor-type">{{typeLabel}}</span>
+        {{#if isCharacter}}
+          <input name="system.concept" type="text" value="{{system.concept}}" placeholder="{{localize 'CORPUS.Actor.Concept'}}" />
+        {{/if}}
+        {{#if isNpc}}
+          <input name="system.role" type="text" value="{{system.role}}" placeholder="{{localize 'CORPUS.Actor.Role'}}" />
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.Threat"}}</span><input name="system.threat" type="number" value="{{system.threat}}" min="0" /></label>
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.Defense"}}</span><input name="system.combat.defense" type="number" value="{{system.combat.defense}}" min="0" /></label>
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.AttackBonus"}}</span><input name="system.combat.attackBonus" type="number" value="{{system.combat.attackBonus}}" /></label>
+        {{/if}}
+      </div>
+    </div>
+  </header>
+
+  <section class="status-hud">
+    <label class="resource resource-wounds has-corpus-info">
+      <span class="resource-label">{{hud.wounds.label}}</span>
+      <span class="resource-values">
+        <input name="system.resources.wounds.value" type="number" value="{{system.resources.wounds.value}}" min="{{system.resources.wounds.min}}" />
+        <b>/</b>
+        <input {{#if isNpc}}name="system.resources.wounds.max"{{/if}} data-info-output="woundsMax" type="number" value="{{system.resources.wounds.max}}" min="0" {{#unless isNpc}}disabled{{/unless}} />
+      </span>
+      <div class="corpus-info-popover" data-corpus-info="wounds">
+        <strong>{{hud.wounds.label}}</strong>
+        <dl>
+          <div><dt>{{infoLabels.resilience}}</dt><dd data-info-value="attribute">{{system.attributes.resilience.value}}</dd></div>
+          <div><dt>{{infoLabels.currentValue}}</dt><dd data-info-value="current">{{system.resources.wounds.value}}</dd></div>
+          <div class="is-total"><dt>{{infoLabels.maximum}}</dt><dd data-info-value="maximum">{{system.resources.wounds.max}}</dd></div>
+        </dl>
+      </div>
+    </label>
+    <div class="resource resource-action-points has-corpus-info">
+      <span class="resource-label">{{hud.actionPoints.label}}</span>
+      <span class="resource-values">
+        <input name="system.resources.actionPoints.value" type="number" value="{{system.resources.actionPoints.value}}" min="{{system.resources.actionPoints.min}}" />
+        <b>/</b>
+        <input data-info-output="actionPointsMax" name="system.resources.actionPoints.max" type="number" value="{{system.resources.actionPoints.max}}" min="0" />
+      </span>
+      <div class="resource-actions">
+        <button type="button" data-action="spendActionPoints" data-tooltip="{{localize 'CORPUS.ActionPoints.ManualSpend'}}"><i class="fa-solid fa-minus"></i></button>
+        <button type="button" data-action="resetActionPoints" data-tooltip="{{localize 'CORPUS.ActionPoints.Reset'}}"><i class="fa-solid fa-rotate-right"></i></button>
+        <button type="button" data-action="refundActionPoints" data-tooltip="{{localize 'CORPUS.ActionPoints.RefundLatest'}}" {{#unless canRefundActionPoints}}disabled{{/unless}}><i class="fa-solid fa-rotate-left"></i></button>
+      </div>
+      <div class="resource-track"><span style="width: {{actionPointsPercent}}%"></span></div>
+      <div class="corpus-info-popover" data-corpus-info="actionPoints">
+        <strong>{{hud.actionPoints.label}}</strong>
+        <dl>
+          <div><dt>{{infoLabels.currentValue}}</dt><dd data-info-value="current">{{system.resources.actionPoints.value}}</dd></div>
+          <div class="is-total"><dt>{{infoLabels.maximum}}</dt><dd data-info-value="maximum">{{system.resources.actionPoints.max}}</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="derived-stats">
+      <div class="has-corpus-info">
+        <span>{{hud.initiative.label}}</span>
+        <strong data-info-output="initiative">{{system.derived.initiative}}</strong>
+        <div class="corpus-info-popover" data-corpus-info="initiative">
+          <strong>{{hud.initiative.label}}</strong>
+          <dl>
+            <div><dt>{{infoLabels.reflexes}}</dt><dd data-info-value="attribute">{{system.attributes.reflexes.value}}</dd></div>
+            <div class="is-total"><dt>{{infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{system.derived.initiative}}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="sheet-tabs" aria-label="{{localize 'CORPUS.Actor.Navigation'}}">
+    <button type="button" class="{{#if tabs.main}}is-active{{/if}}" data-action="setTab" data-tab="main"><i class="fa-solid fa-chart-simple"></i><span>{{localize "CORPUS.Actor.Tabs.Main"}}</span></button>
+    {{#each itemSections as |section|}}
+      <button type="button" class="{{#if section.active}}is-active{{/if}}" data-action="setTab" data-tab="{{section.id}}"><i class="{{section.icon}}"></i><span>{{section.label}}</span></button>
+    {{/each}}
+    {{#each featureTabs as |feature|}}
+      <button type="button" class="{{#if feature.active}}is-active{{/if}}" data-action="setTab" data-tab="{{feature.id}}"><i class="{{feature.icon}}"></i><span>{{feature.label}}</span></button>
+    {{/each}}
+    <button type="button" class="{{#if tabs.biography}}is-active{{/if}}" data-action="setTab" data-tab="biography"><i class="fa-solid fa-book-open"></i><span>{{localize "CORPUS.Actor.Tabs.Biography"}}</span></button>
+  </nav>
+
+  <section class="tab-panel {{#if tabs.main}}is-active{{/if}}" data-tab-panel="main">
+    {{#if isCharacter}}
+      <div class="advancement-compact">
+        <label class="compact-field advancement-points-field"><span>{{localize "CORPUS.Actor.Advancement.PointsShort"}}</span><input name="system.advancement.points" type="number" value="{{system.advancement.points}}" min="0" /></label>
+        <button type="button" class="advancement-button" data-action="advanceCharacter" data-tooltip="{{localize 'CORPUS.Actor.Advancement.Title'}}">
+          <i class="fa-solid fa-arrow-up-right-dots"></i>
+          <span>{{localize "CORPUS.Actor.Advancement.Button"}}</span>
+        </button>
+      </div>
+    {{/if}}
+    <div class="attribute-groups">
+      {{#each attributeGroups as |attribute|}}
+        <article class="attribute-card">
+          <header>
+            <button type="button" class="roll-name" data-action="rollAttribute" data-attribute-id="{{attribute.id}}" title="{{localize 'CORPUS.Actor.RollAttribute'}}">
+              <i class="fa-solid fa-dice-d10"></i>
+              <span>{{attribute.label}}</span>
+            </button>
+            <input class="score-input" name="system.attributes.{{attribute.id}}.value" type="number" value="{{attribute.value}}" min="0" step="1" />
+            <div class="corpus-info-popover" data-corpus-info="attribute" data-attribute-id="{{attribute.id}}">
+              <strong>{{attribute.label}}</strong>
+              <dl>
+                <div><dt>{{../infoLabels.attributeValue}}</dt><dd data-info-value="attribute">{{attribute.value}}</dd></div>
+                <div class="is-total"><dt>{{../infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{attribute.value}}</dd></div>
+              </dl>
+            </div>
+          </header>
+          <div class="skill-rows">
+            {{#each attribute.skills as |skill|}}
+              <label class="skill-row">
+                <button type="button" data-action="rollSkill" data-skill-id="{{skill.id}}" aria-label="{{skill.label}}: {{skill.attributeLabel}}">
+                  <i class="fa-solid fa-dice-d10"></i>
+                  <span>{{skill.label}}</span>
+                </button>
+                <input class="score-input" name="system.skills.{{skill.id}}.value" type="number" value="{{skill.value}}" min="0" step="1" />
+                <div class="corpus-info-popover" data-corpus-info="skill" data-skill-id="{{skill.id}}" data-attribute-id="{{skill.attribute}}">
+                  <strong>{{skill.label}}</strong>
+                  <dl>
+                    <div><dt>{{../../infoLabels.skillValue}}</dt><dd data-info-value="skill">+ {{skill.value}}</dd></div>
+                    <div><dt>{{../../infoLabels.halfAttribute}}: {{skill.attributeLabel}}</dt><dd data-info-value="attributeHalf">+ 0</dd></div>
+                    <div class="is-total"><dt>{{../../infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{skill.value}}</dd></div>
+                  </dl>
+                </div>
+              </label>
+            {{/each}}
+          </div>
+        </article>
+      {{/each}}
+    </div>
+  </section>
+
+  {{#each itemSections as |section|}}
+    <section class="tab-panel {{#if section.active}}is-active{{/if}}" data-tab-panel="{{section.id}}">
+      {{#if section.showCredits}}
+        <div class="inventory-wallet">
+          <label>
+            <span>{{localize "CORPUS.Actor.Credits"}}</span>
+            <input name="system.currency.credits" type="number" value="{{@root.system.currency.credits}}" min="0" />
+          </label>
+        </div>
+      {{/if}}
+      {{#if section.stats}}
+        <div class="section-stats">
+          {{#each section.stats as |stat|}}
+            <div class="has-corpus-info">
+              <span>{{stat.label}}</span>
+              <strong data-info-output="{{stat.infoKind}}">{{stat.value}}</strong>
+              {{#if stat.infoKind}}
+                <div class="corpus-info-popover" data-corpus-info="{{stat.infoKind}}">
+                  <strong>{{stat.label}}</strong>
+                  <dl>
+                    {{#if stat.isCarryWeight}}
+                      <div><dt>{{@root.infoLabels.physique}}</dt><dd data-info-value="attribute">{{@root.system.attributes.physique.value}}</dd></div>
+                    {{/if}}
+                    {{#if stat.isImplantSlots}}
+                      <div><dt>{{@root.infoLabels.synchronization}}</dt><dd data-info-value="attribute">{{@root.system.attributes.synchronization.value}}</dd></div>
+                    {{/if}}
+                    {{#if stat.isGeneticLimit}}
+                      <div><dt>{{@root.infoLabels.resilience}}</dt><dd data-info-value="resilience">{{@root.system.attributes.resilience.value}}</dd></div>
+                      <div><dt>{{@root.infoLabels.humanity}}</dt><dd data-info-value="humanity">{{@root.system.attributes.humanity.value}}</dd></div>
+                    {{/if}}
+                    <div class="is-total"><dt>{{@root.infoLabels.currentModifier}}</dt><dd data-info-value="total">{{stat.value}}</dd></div>
+                  </dl>
+                </div>
+              {{/if}}
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if section.listLayout}}
+        <div class="inventory-toolbar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" data-inventory-search placeholder="{{localize 'CORPUS.Actor.Inventory.Search'}}" autocomplete="off" />
+        </div>
+      {{/if}}
+      <div class="item-groups {{#if section.listLayout}}inventory-list{{/if}} {{#if section.inventoryColumns}}has-columns{{/if}} {{#if section.compactList}}compact-item-list{{/if}}">
+        {{#each section.groups as |group|}}
+          <section class="item-group">
+            <header>
+              <h3>{{group.label}}</h3>
+              {{#if ../inventoryColumns}}
+                <span class="inventory-column quantity">{{localize "CORPUS.Item.QuantityShort"}}</span>
+                <span class="inventory-column weight">{{localize "CORPUS.Item.Weight"}}</span>
+              {{/if}}
+              <button type="button" data-action="createItem" {{#if group.type}}data-item-type="{{group.type}}"{{/if}} {{#if group.createTypes}}data-item-types="{{group.createTypes}}" data-item-location="{{group.location}}"{{/if}} data-tooltip="{{localize 'CORPUS.Item.Create'}}">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </header>
+            <ol class="item-list">
+              {{#each group.items as |item|}}
+                <li class="item-row {{#if item.equipped}}is-equipped{{/if}} {{#if item.active}}is-active-item{{/if}}" data-item-id="{{item._id}}" data-search-text="{{item.searchText}}">
+                  <img src="{{item.img}}" alt="" />
+                  <button type="button" class="item-name" data-action="openItem">
+                    <span>{{item.name}}</span>
+                    {{#if item.meta}}
+                      <small class="item-meta">
+                        {{#each item.meta as |meta|}}
+                          <em class="item-chip item-chip-{{meta.kind}}">{{meta.label}}</em>
+                        {{/each}}
+                      </small>
+                    {{/if}}
+                  </button>
+                  {{#if ../../inventoryColumns}}
+                    <span class="inventory-column quantity">{{item.quantity}}</span>
+                    <span class="inventory-column weight">{{item.weight}}</span>
+                  {{/if}}
+                  <div class="item-controls">
+                    {{#if item.isWeapon}}
+                      <button type="button" data-action="attackWeapon" data-tooltip="{{item.attackTooltip}}"><i class="fa-solid fa-crosshairs"></i></button>
+                    {{/if}}
+                    {{#if item.isEquippable}}
+                      <button type="button" data-action="toggleEquipped" data-tooltip="{{localize 'CORPUS.Item.Equipped'}}"><i class="fa-solid {{#if item.equipped}}fa-toggle-on{{else}}fa-toggle-off{{/if}}"></i></button>
+                    {{/if}}
+                    {{#if item.isActivatable}}
+                      <button type="button" data-action="toggleActive" data-tooltip="{{localize 'CORPUS.Item.Active'}}"><i class="fa-solid {{#if item.active}}fa-toggle-on{{else}}fa-toggle-off{{/if}}"></i></button>
+                    {{/if}}
+                    <button type="button" data-action="deleteItem" data-tooltip="{{localize 'CORPUS.Item.Delete'}}"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                </li>
+              {{else}}
+                <li class="empty">{{localize "CORPUS.Actor.NoItems"}}</li>
+              {{/each}}
+            </ol>
+          </section>
+        {{/each}}
+      </div>
+    </section>
+  {{/each}}
+
+  {{#each featureTabs as |feature|}}
+    <section class="tab-panel feature-panel {{feature.panelClass}} {{#if feature.active}}is-active{{/if}}" data-tab-panel="{{feature.id}}">
+      {{{feature.content}}}
+    </section>
+  {{/each}}
+
+  <section class="tab-panel biography-panel {{#if tabs.biography}}is-active{{/if}}" data-tab-panel="biography">
+    <prose-mirror name="system.biography" value="{{system.biography}}" toggled="true" collaborate="true"></prose-mirror>
+  </section>
+</form>

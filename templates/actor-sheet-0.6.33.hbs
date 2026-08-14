@@ -1,0 +1,290 @@
+<form class="corpus-sheet corpus-actor-sheet" autocomplete="off">
+  {{#unless isCharacter}}
+    <header class="actor-identity">
+      <img class="profile-img" src="{{document.img}}" data-edit="img" data-action="editImage" title="{{document.name}}" />
+      <div class="identity-fields">
+        <input class="document-name" name="name" type="text" value="{{document.name}}" placeholder="{{localize 'CORPUS.Common.Name'}}" />
+        <div class="identity-meta">
+          <span class="actor-type">{{typeLabel}}</span>
+          <input name="system.role" type="text" value="{{system.role}}" placeholder="{{localize 'CORPUS.Actor.Role'}}" />
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.Threat"}}</span><input name="system.threat" type="number" value="{{system.threat}}" min="0" /></label>
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.Defense"}}</span><input name="system.combat.defense" type="number" value="{{system.combat.defense}}" min="0" /></label>
+          <label class="compact-field"><span>{{localize "CORPUS.Actor.AttackBonus"}}</span><input name="system.combat.attackBonus" type="number" value="{{system.combat.attackBonus}}" /></label>
+        </div>
+      </div>
+    </header>
+
+    <section class="status-hud">
+      <label class="resource resource-wounds">
+        <span class="resource-label">{{hud.wounds.label}}</span>
+        <span class="resource-values">
+          <input name="system.resources.wounds.value" type="number" value="{{system.resources.wounds.value}}" min="{{system.resources.wounds.min}}" />
+          <b>/</b>
+          <input name="system.resources.wounds.max" type="number" value="{{system.resources.wounds.max}}" min="0" />
+        </span>
+      </label>
+      <div class="derived-stats">
+        <div><span>{{hud.initiative.label}}</span><strong>{{system.derived.initiative}}</strong></div>
+      </div>
+    </section>
+  {{/unless}}
+
+  <nav class="sheet-tabs" aria-label="{{localize 'CORPUS.Actor.Navigation'}}">
+    <button type="button" class="{{#if tabs.main}}is-active{{/if}}" data-action="setTab" data-tab="main"><i class="fa-solid fa-chart-simple"></i><span>{{localize "CORPUS.Actor.Tabs.Main"}}</span></button>
+    {{#each itemSections as |section|}}
+      <button type="button" class="{{#if section.active}}is-active{{/if}}" data-action="setTab" data-tab="{{section.id}}"><i class="{{section.icon}}"></i><span>{{section.label}}</span></button>
+    {{/each}}
+    <button type="button" class="{{#if tabs.biography}}is-active{{/if}}" data-action="setTab" data-tab="biography"><i class="fa-solid fa-book-open"></i><span>{{localize "CORPUS.Actor.Tabs.Biography"}}</span></button>
+  </nav>
+
+  <section class="tab-panel {{#if tabs.main}}is-active{{/if}}" data-tab-panel="main">
+    {{#if isCharacter}}
+      <div class="character-dossier">
+        <section class="dossier-hero">
+          <aside class="portrait-panel">
+            <img class="dossier-portrait" src="{{document.img}}" data-edit="img" data-action="editImage" title="{{document.name}}" />
+          </aside>
+
+          <section class="dossier-panel identity-panel">
+            <h2>{{localize "CORPUS.Actor.Identity.Title"}}</h2>
+            <div class="identity-grid">
+              <label><span>{{localize "CORPUS.Common.Name"}}</span><input name="name" type="text" value="{{document.name}}" /></label>
+              <label><span>{{localize "CORPUS.Actor.Concept"}}</span><input name="system.concept" type="text" value="{{system.concept}}" /></label>
+              <label><span>{{localize "CORPUS.Actor.Origin"}}</span><input name="system.origin" type="text" value="{{system.origin}}" /></label>
+              <label><span>{{localize "CORPUS.Actor.Gender"}}</span><input name="system.gender" type="text" value="{{system.gender}}" /></label>
+              <label><span>{{localize "CORPUS.Actor.Age"}}</span><input name="system.age" type="text" value="{{system.age}}" /></label>
+              <label><span>{{localize "CORPUS.Actor.Height"}}</span><input name="system.height" type="text" value="{{system.height}}" /></label>
+            </div>
+          </section>
+
+          <section class="dossier-panel appearance-panel">
+            <h2>{{localize "CORPUS.Actor.Appearance"}}</h2>
+            <textarea name="system.appearance">{{system.appearance}}</textarea>
+          </section>
+        </section>
+
+        <section class="dossier-derived-panel">
+          <div class="dossier-derived-grid">
+            <div class="derived-tile has-corpus-info">
+              <span>{{hud.wounds.label}}</span>
+              <strong><input name="system.resources.wounds.value" type="number" value="{{system.resources.wounds.value}}" min="{{system.resources.wounds.min}}" /> / <span data-info-output="woundsMax">{{system.resources.wounds.max}}</span></strong>
+              <div class="corpus-info-popover" data-corpus-info="wounds">
+                <strong>{{hud.wounds.label}}</strong>
+                <dl>
+                  <div><dt>{{infoLabels.resilience}}</dt><dd data-info-value="attribute">{{system.attributes.resilience.value}}</dd></div>
+                  <div><dt>{{infoLabels.currentValue}}</dt><dd data-info-value="current">{{system.resources.wounds.value}}</dd></div>
+                  <div class="is-total"><dt>{{infoLabels.maximum}}</dt><dd data-info-value="maximum">{{system.resources.wounds.max}}</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="derived-tile has-corpus-info">
+              <span>{{hud.initiative.label}}</span>
+              <strong data-info-output="initiative">{{system.derived.initiative}}</strong>
+              <div class="corpus-info-popover" data-corpus-info="initiative">
+                <strong>{{hud.initiative.label}}</strong>
+                <dl>
+                  <div><dt>{{infoLabels.reflexes}}</dt><dd data-info-value="attribute">{{system.attributes.reflexes.value}}</dd></div>
+                  <div class="is-total"><dt>{{infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{system.derived.initiative}}</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="derived-tile has-corpus-info">
+              <span>{{hud.carryWeight.label}}</span>
+              <strong><span data-info-output="carryWeight">{{system.derived.carryWeight}}</span> {{localize "CORPUS.Common.Kilograms"}}</strong>
+              <div class="corpus-info-popover" data-corpus-info="carryWeight">
+                <strong>{{hud.carryWeight.label}}</strong>
+                <dl>
+                  <div><dt>{{infoLabels.physique}}</dt><dd data-info-value="attribute">{{system.attributes.physique.value}}</dd></div>
+                  <div class="is-total"><dt>{{infoLabels.currentModifier}}</dt><dd data-info-value="total">{{system.derived.carryWeight}}</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="derived-tile has-corpus-info">
+              <span>{{hud.implantSlots.label}}</span>
+              <strong data-info-output="implantSlots">{{system.derived.implantSlots}}</strong>
+              <div class="corpus-info-popover" data-corpus-info="implantSlots">
+                <strong>{{hud.implantSlots.label}}</strong>
+                <dl>
+                  <div><dt>{{infoLabels.synchronization}}</dt><dd data-info-value="attribute">{{system.attributes.synchronization.value}}</dd></div>
+                  <div class="is-total"><dt>{{infoLabels.currentModifier}}</dt><dd data-info-value="total">{{system.derived.implantSlots}}</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="derived-tile has-corpus-info">
+              <span>{{hud.geneticLimit.label}}</span>
+              <strong data-info-output="geneticLimit">{{system.derived.geneticLimit}}</strong>
+              <div class="corpus-info-popover" data-corpus-info="geneticLimit">
+                <strong>{{hud.geneticLimit.label}}</strong>
+                <dl>
+                  <div><dt>{{infoLabels.resilience}}</dt><dd data-info-value="resilience">{{system.attributes.resilience.value}}</dd></div>
+                  <div><dt>{{infoLabels.humanity}}</dt><dd data-info-value="humanity">{{system.attributes.humanity.value}}</dd></div>
+                  <div class="is-total"><dt>{{infoLabels.currentModifier}}</dt><dd data-info-value="total">{{system.derived.geneticLimit}}</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="derived-tile advancement-tile">
+              <button type="button" data-action="advanceCharacter"><span>{{localize "CORPUS.Actor.Advancement.Button"}}</span></button>
+              <input name="system.advancement.points" type="number" value="{{system.advancement.points}}" min="0" />
+            </div>
+          </div>
+        </section>
+
+        <section class="dossier-block">
+          <h2>{{localize "CORPUS.Actor.Characteristics"}}</h2>
+          <div class="attribute-summary-grid">
+            {{#each attributeGroups as |attribute|}}
+              <button type="button" class="attribute-summary-card has-corpus-info" data-action="rollAttribute" data-attribute-id="{{attribute.id}}" title="{{localize 'CORPUS.Actor.RollAttribute'}}">
+                <span>{{attribute.label}}</span>
+                <strong>{{attribute.value}}</strong>
+                <div class="corpus-info-popover" data-corpus-info="attribute" data-attribute-id="{{attribute.id}}">
+                  <strong>{{attribute.label}}</strong>
+                  <dl>
+                    <div><dt>{{../infoLabels.attributeValue}}</dt><dd data-info-value="attribute">{{attribute.value}}</dd></div>
+                    <div class="is-total"><dt>{{../infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{attribute.value}}</dd></div>
+                  </dl>
+                </div>
+              </button>
+            {{/each}}
+          </div>
+        </section>
+
+        <section class="dossier-block">
+          <h2>{{localize "CORPUS.Actor.SkillsTitle"}}</h2>
+          <div class="skill-summary-grid">
+            {{#each attributeGroups as |attribute|}}
+              <article class="skill-summary-card">
+                <h3>{{attribute.label}}</h3>
+                {{#each attribute.skills as |skill|}}
+                  <button type="button" class="skill-summary-row has-corpus-info" data-action="rollSkill" data-skill-id="{{skill.id}}">
+                    <span>{{skill.label}}</span>
+                    <strong>+{{skill.value}}</strong>
+                    <div class="corpus-info-popover" data-corpus-info="skill" data-skill-id="{{skill.id}}" data-attribute-id="{{skill.attribute}}">
+                      <strong>{{skill.label}}</strong>
+                      <dl>
+                        <div><dt>{{../../infoLabels.skillValue}}</dt><dd data-info-value="skill">+ {{skill.value}}</dd></div>
+                        <div><dt>{{../../infoLabels.halfAttribute}}: {{skill.attributeLabel}}</dt><dd data-info-value="attributeHalf">+ 0</dd></div>
+                        <div class="is-total"><dt>{{../../infoLabels.currentModifier}}</dt><dd data-info-value="total">+ {{skill.value}}</dd></div>
+                      </dl>
+                    </div>
+                  </button>
+                {{/each}}
+              </article>
+            {{/each}}
+          </div>
+        </section>
+      </div>
+    {{else}}
+      <div class="attribute-groups">
+        {{#each attributeGroups as |attribute|}}
+          <article class="attribute-card">
+            <header>
+              <button type="button" class="roll-name" data-action="rollAttribute" data-attribute-id="{{attribute.id}}" title="{{localize 'CORPUS.Actor.RollAttribute'}}">
+                <i class="fa-solid fa-dice-d10"></i><span>{{attribute.label}}</span>
+              </button>
+              <input name="system.attributes.{{attribute.id}}.value" type="number" value="{{attribute.value}}" min="0" />
+            </header>
+            <div class="skill-rows">
+              {{#each attribute.skills as |skill|}}
+                <label class="skill-row">
+                  <button type="button" data-action="rollSkill" data-skill-id="{{skill.id}}" aria-label="{{skill.label}}: {{skill.attributeLabel}}">
+                    <i class="fa-solid fa-dice-d10"></i><span>{{skill.label}}</span>
+                  </button>
+                  <input name="system.skills.{{skill.id}}.value" type="number" value="{{skill.value}}" min="0" />
+                </label>
+              {{/each}}
+            </div>
+          </article>
+        {{/each}}
+      </div>
+    {{/if}}
+  </section>
+
+  {{#each itemSections as |section|}}
+    <section class="tab-panel {{#if section.active}}is-active{{/if}} {{#if section.inventoryColumns}}inventory-page{{/if}}" data-tab-panel="{{section.id}}">
+      {{#if section.inventorySummary}}
+        <div class="inventory-summary-panel">
+          <div class="inventory-summary-cell">
+            <span>{{section.inventorySummary.carryLabel}}</span>
+            <strong>{{section.inventorySummary.currentWeight}} / {{section.inventorySummary.maximumWeight}} <small>{{localize "CORPUS.Common.Kilograms"}}</small></strong>
+          </div>
+          <div class="inventory-summary-cell">
+            <span>{{section.inventorySummary.creditsLabel}}</span>
+            <strong>{{section.inventorySummary.credits}}</strong>
+          </div>
+        </div>
+      {{/if}}
+      {{#if section.stats}}
+        <div class="section-stats">
+          {{#each section.stats as |stat|}}
+            <div>
+              <span>{{stat.label}}</span>
+              <strong>{{stat.value}}</strong>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if section.listLayout}}
+        <div class="inventory-toolbar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" data-inventory-search placeholder="{{localize 'CORPUS.Actor.Inventory.Search'}}" autocomplete="off" />
+        </div>
+      {{/if}}
+      <div class="item-groups {{#if section.listLayout}}inventory-list{{/if}} {{#if section.inventoryColumns}}has-columns{{/if}} {{#if section.compactList}}compact-item-list{{/if}}">
+        {{#each section.groups as |group|}}
+          <section class="item-group">
+            <header>
+              <h3>{{group.label}}</h3>
+              {{#if ../inventoryColumns}}
+                <span class="inventory-column quantity">{{localize "CORPUS.Item.Quantity"}}</span>
+                <span class="inventory-column weight">{{localize "CORPUS.Item.Mass"}}</span>
+              {{/if}}
+              <button type="button" data-action="createItem" {{#if group.type}}data-item-type="{{group.type}}"{{/if}} {{#if group.createTypes}}data-item-types="{{group.createTypes}}" data-item-location="{{group.location}}"{{/if}} data-tooltip="{{localize 'CORPUS.Item.Create'}}">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </header>
+            <ol class="item-list">
+              {{#each group.items as |item|}}
+                <li class="item-row {{#if item.equipped}}is-equipped{{/if}} {{#if item.active}}is-active-item{{/if}}" data-item-id="{{item._id}}" data-search-text="{{item.searchText}}">
+                  <img src="{{item.img}}" alt="" />
+                  <button type="button" class="item-name" data-action="openItem">
+                    <span>{{item.name}}</span>
+                    {{#if item.meta}}
+                      <small class="item-meta">
+                        {{#each item.meta as |meta|}}
+                          <em class="item-chip item-chip-{{meta.kind}}">{{meta.label}}</em>
+                        {{/each}}
+                      </small>
+                    {{/if}}
+                  </button>
+                  {{#if ../../inventoryColumns}}
+                    <span class="inventory-column quantity">{{item.quantity}}</span>
+                    <span class="inventory-column weight">{{item.weight}}</span>
+                  {{/if}}
+                  <div class="item-controls">
+                    {{#if item.isWeapon}}
+                      <button type="button" data-action="attackWeapon" data-tooltip="{{localize 'CORPUS.Combat.Attack'}}"><i class="fa-solid fa-crosshairs"></i></button>
+                    {{/if}}
+                    {{#if item.isEquippable}}
+                      <button type="button" data-action="toggleEquipped" data-tooltip="{{localize 'CORPUS.Item.Equipped'}}"><i class="fa-solid {{#if item.equipped}}fa-toggle-on{{else}}fa-toggle-off{{/if}}"></i></button>
+                    {{/if}}
+                    {{#if item.isActivatable}}
+                      <button type="button" data-action="toggleActive" data-tooltip="{{localize 'CORPUS.Item.Active'}}"><i class="fa-solid {{#if item.active}}fa-toggle-on{{else}}fa-toggle-off{{/if}}"></i></button>
+                    {{/if}}
+                    <button type="button" data-action="openItem" data-tooltip="{{localize 'CORPUS.Actor.Creation.Edit'}}"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button type="button" data-action="deleteItem" data-tooltip="{{localize 'CORPUS.Item.Delete'}}"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                </li>
+              {{else}}
+                <li class="empty">{{localize "CORPUS.Actor.NoItems"}}</li>
+              {{/each}}
+            </ol>
+          </section>
+        {{/each}}
+      </div>
+    </section>
+  {{/each}}
+
+  <section class="tab-panel biography-panel {{#if tabs.biography}}is-active{{/if}}" data-tab-panel="biography">
+    <prose-mirror name="system.biography" value="{{system.biography}}" toggled="true" collaborate="true"></prose-mirror>
+  </section>
+</form>

@@ -1,0 +1,183 @@
+{
+  "id": "corpus",
+  "title": "Corpus",
+  "description": "A custom tabletop roleplaying game system for Foundry Virtual Tabletop.",
+  "version": "0.6.37",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Corpus Authors"
+    }
+  ],
+  "esmodules": [
+    "module/corpus-0.6.37.mjs"
+  ],
+  "styles": [
+    "styles/corpus-0.6.37.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    },
+    {
+      "lang": "ru-RU",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "npc": {
+        "htmlFields": [
+          "biography"
+        ]
+      }
+    },
+    "Item": {
+      "equipment": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "consumable": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "ability": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "trait": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "weapon": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "armor": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "implant": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "genetic": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "condition": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "maneuver": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    }
+  },
+  "packs": [
+    {
+      "name": "corpus-weapons",
+      "label": "Оружие и гранаты",
+      "path": "packs/corpus-weapons",
+      "type": "Item",
+      "system": "corpus",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "corpus-armor",
+      "label": "Броня",
+      "path": "packs/corpus-armor",
+      "type": "Item",
+      "system": "corpus",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "corpus-implants",
+      "label": "Импланты",
+      "path": "packs/corpus-implants",
+      "type": "Item",
+      "system": "corpus",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "corpus-genetics",
+      "label": "Генетика",
+      "path": "packs/corpus-genetics",
+      "type": "Item",
+      "system": "corpus",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "corpus-maneuvers",
+      "label": "Манёвры",
+      "path": "packs/corpus-maneuvers",
+      "type": "Item",
+      "system": "corpus",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Corpus — справочники",
+      "color": "#a43f35",
+      "sorting": "m",
+      "packs": [
+        "corpus-weapons",
+        "corpus-armor",
+        "corpus-implants",
+        "corpus-genetics",
+        "corpus-maneuvers"
+      ]
+    }
+  ],
+  "socket": false,
+  "initiative": "1d10 + @attributes.reflexes.value",
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "resources.wounds",
+  "secondaryTokenAttribute": "resources.actionPoints"
+}

@@ -1,0 +1,29 @@
+<article class="corpus-chat-card corpus-damage-card">
+  <header>
+    <div>
+      <strong>{{weapon}}</strong>
+      <span>{{labels.Damage}}</span>
+    </div>
+    <span>{{attacker}}</span>
+  </header>
+  <section class="corpus-roll-summary">
+    <div class="corpus-roll-total">
+      <span>{{labels.RawDamage}}</span>
+      <strong>{{rawDamage}}</strong>
+    </div>
+    <div class="corpus-roll-outcome is-damage">
+      <span>{{labels.FinalDamage}}</span>
+      <strong>{{finalDamage}}</strong>
+    </div>
+  </section>
+  <dl>
+    <dt>{{labels.Target}}</dt><dd>{{target}}</dd>
+    <dt>{{labels.Armor}}</dt><dd>{{armor}}</dd>
+    <dt>{{labels.Structure}}</dt><dd>{{structure}}</dd>
+    <dt>{{labels.Mitigation}}</dt><dd>{{mitigation}}</dd>
+    <dt>BP</dt><dd>{{bp}}</dd>
+  </dl>
+  {{#if canApply}}
+    <button type="button" data-corpus-action="apply-damage"><i class="fa-solid fa-heart-crack"></i> {{labels.ApplyDamage}}</button>
+  {{/if}}
+</article>

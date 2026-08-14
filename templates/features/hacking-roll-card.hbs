@@ -1,0 +1,44 @@
+<div class="corpus-chat-card corpus-hacking-card">
+  <header>
+    <strong>{{action}}</strong>
+    <span>{{actor}}</span>
+  </header>
+
+  <dl>
+    <dt>{{labels.AP}}</dt>
+    <dd>{{apCost}}</dd>
+    <dt>{{labels.Formula}}</dt>
+    <dd>{{formula}}</dd>
+    <dt>{{labels.Total}}</dt>
+    <dd>{{total}}</dd>
+    <dt>{{labels.BaseDifficulty}}</dt>
+    <dd>{{baseDifficulty}}</dd>
+    <dt>{{labels.Access}}</dt>
+    <dd>{{access}}</dd>
+    <dt>{{labels.Modifier}}</dt>
+    <dd>{{modifier}}</dd>
+    <dt>{{labels.EffectiveDifficulty}}</dt>
+    <dd>{{difficulty}}</dd>
+    {{#if actionPointSpend}}
+      <dt>{{labels.ActionPoints}}</dt>
+      <dd>
+        {{#if actionPointSpend.didSpend}}
+          {{labels.APSpent}}: {{actionPointSpend.spent}} / {{actionPointSpend.cost}}
+        {{else}}
+          {{labels.APNotSpent}}: {{actionPointSpend.cost}}
+        {{/if}}
+      </dd>
+      {{#if actionPointSpend.reason}}<dt>{{labels.APReason}}</dt><dd>{{actionPointSpend.reason}}</dd>{{/if}}
+      {{#if actionPointSpend.overrun}}<dt>{{labels.APOverrun}}</dt><dd>{{actionPointSpend.overrun}}</dd>{{/if}}
+    {{/if}}
+  </dl>
+
+  <p class="roll-result {{#if success}}is-success{{else}}is-failure{{/if}}">
+    {{#if success}}{{labels.Success}}{{else}}{{labels.Failure}}{{/if}}
+  </p>
+
+  <p class="hacking-risk"><strong>{{labels.Risk}}:</strong> {{risk}}</p>
+  {{#if actionPointSpend.canRefund}}
+    <button type="button" data-corpus-action="refund-ap"><i class="fa-solid fa-rotate-left"></i> {{labels.RefundAP}}</button>
+  {{/if}}
+</div>

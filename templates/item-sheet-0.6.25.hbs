@@ -1,0 +1,213 @@
+<form class="corpus-sheet corpus-item-sheet" autocomplete="off">
+  <header class="sheet-header item-identity">
+    <img class="profile-img" src="{{document.img}}" data-edit="img" data-action="editImage" title="{{document.name}}" />
+    <div class="header-fields">
+      <input class="document-name" name="name" type="text" value="{{document.name}}" placeholder="{{localize 'CORPUS.Common.Name'}}" />
+      <span class="item-type-badge">{{typeLabel}}</span>
+    </div>
+  </header>
+
+  <section class="item-workspace">
+    <aside class="item-summary-panel">
+      <h2>Сводка</h2>
+      <dl>
+        {{#each summaryRows as |row|}}
+          <div>
+            <dt>{{row.label}}</dt>
+            <dd>{{row.value}}</dd>
+          </div>
+        {{/each}}
+      </dl>
+    </aside>
+
+    <section class="item-main-panel">
+      <nav class="sheet-tabs item-tabs" aria-label="{{localize 'CORPUS.Sheets.Item'}}">
+        <button type="button" class="{{#if tabs.description}}is-active{{/if}}" data-action="setTab" data-tab="description">
+          <i class="fa-solid fa-align-left"></i><span>{{localize "CORPUS.Item.Description"}}</span>
+        </button>
+        <button type="button" class="{{#if tabs.details}}is-active{{/if}}" data-action="setTab" data-tab="details">
+          <i class="fa-solid fa-sliders"></i><span>Настройки</span>
+        </button>
+      </nav>
+
+      <section class="tab-panel item-description-panel {{#if tabs.description}}is-active{{/if}}" data-tab-panel="description">
+        <header>
+          <h2>{{localize "CORPUS.Item.Description"}}</h2>
+          <div class="item-panel-actions">
+            {{#if descriptionEditing}}
+              <button type="button" data-action="saveItem" data-finish-edit="true" data-tooltip="{{localize 'Save'}}">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </button>
+            {{else}}
+              <button type="button" data-action="toggleDescriptionEdit" data-tooltip="{{localize 'CORPUS.Actor.Creation.Edit'}}">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            {{/if}}
+          </div>
+        </header>
+        {{#if descriptionEditing}}
+          <input type="hidden" name="system.description" value="{{system.description}}" data-description-input />
+          <div class="item-description-editor" contenteditable="true" data-description-editor>{{{descriptionHTML}}}</div>
+        {{else}}
+          <div class="item-description-content">{{{descriptionHTML}}}</div>
+        {{/if}}
+      </section>
+
+      <section class="tab-panel item-details-panel {{#if tabs.details}}is-active{{/if}}" data-tab-panel="details">
+        <header class="item-panel-header">
+          <h2>Настройки</h2>
+          <div class="item-panel-actions">
+            {{#if detailsEditing}}
+              <button type="button" data-action="saveItem" data-finish-details-edit="true" data-tooltip="{{localize 'Save'}}">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </button>
+            {{else}}
+              <button type="button" data-action="toggleDetailsEdit" data-tooltip="{{localize 'CORPUS.Actor.Creation.Edit'}}">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            {{/if}}
+          </div>
+        </header>
+        <fieldset class="item-details-fields" {{#unless detailsEditing}}disabled{{/unless}}>
+        <section class="resource-grid item-common-grid">
+          <label>
+            <span>{{localize "CORPUS.Item.Type"}}</span>
+            <input type="text" value="{{typeLabel}}" disabled />
+          </label>
+          <label class="wide-field">
+            <span>{{localize "CORPUS.Item.Tags"}}</span>
+            <input name="system.tags" type="text" value="{{system.tags}}" />
+          </label>
+        </section>
+
+        {{#if isEquipment}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.Quantity"}}</span><input name="system.quantity" type="number" value="{{system.quantity}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.Weight"}}</span><input name="system.weight" type="number" value="{{system.weight}}" min="0" step="0.1" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Equipped"}}</span><input name="system.equipped" type="checkbox" {{checked system.equipped}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isConsumable}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.Quantity"}}</span><input name="system.quantity" type="number" value="{{system.quantity}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.Weight"}}</span><input name="system.weight" type="number" value="{{system.weight}}" min="0" step="0.1" /></label>
+            <label><span>{{localize "CORPUS.Item.ActionCost"}}</span><input name="system.actionCost" type="number" value="{{system.actionCost}}" min="0" max="4" /></label>
+          </section>
+        {{/if}}
+
+        {{#if isModification}}
+          <section class="resource-grid">
+            <label>
+              <span>{{localize "CORPUS.Item.Location"}}</span>
+              <select name="system.location">
+                {{#each bodyLocations as |option|}}
+                  <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+          </section>
+        {{/if}}
+
+        {{#if isAbility}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.ActionCost"}}</span><input name="system.actionCost" type="number" value="{{system.actionCost}}" min="0" max="4" /></label>
+            <label class="wide-field"><span>{{localize "CORPUS.Item.Roll"}}</span><input name="system.roll" type="text" value="{{system.roll}}" placeholder="1d10 + @skills.shooting.value" /></label>
+          </section>
+        {{/if}}
+
+        {{#if isTrait}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.Rank"}}</span><input name="system.rank" type="number" value="{{system.rank}}" min="0" /></label>
+          </section>
+        {{/if}}
+
+        {{#if isWeapon}}
+          <section class="resource-grid weapon-grid">
+            <label>
+              <span>{{localize "CORPUS.Item.AttackMode"}}</span>
+              <select name="system.attackMode">
+                {{#each attackModes as |option|}}
+                  <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+            <label><span>{{localize "CORPUS.Item.DamageFormula"}}</span><input name="system.damageFormula" type="text" value="{{damageFormula}}" placeholder="1d6+2" /></label>
+            <label><span>{{localize "CORPUS.Item.BP"}}</span><input name="system.bp" type="number" value="{{system.bp}}" min="0" /></label>
+            <label>
+              <span>{{localize "CORPUS.Item.DamageType"}}</span>
+              <select name="system.damageType">
+                {{#each damageTypes as |option|}}
+                  <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+            <label><span>{{localize "CORPUS.Item.Speed"}}</span><input name="system.speed" type="number" value="{{system.speed}}" min="1" max="4" /></label>
+            <label><span>{{localize "CORPUS.Item.ComfortableRange"}}</span><input name="system.comfortableRange" type="text" value="{{system.comfortableRange}}" /></label>
+            <label><span>{{localize "CORPUS.Item.MaximumRange"}}</span><input name="system.maximumRange" type="text" value="{{system.maximumRange}}" /></label>
+            <label><span>{{localize "CORPUS.Item.WeightClass"}}</span><input name="system.weightClass" type="text" value="{{system.weightClass}}" /></label>
+            <label><span>{{localize "CORPUS.Item.Magazine"}}</span><input name="system.magazine" type="text" value="{{system.magazine}}" /></label>
+            <label><span>{{localize "CORPUS.Item.ActionCost"}}</span><input name="system.actionCost" type="number" value="{{system.actionCost}}" min="0" max="4" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Equipped"}}</span><input name="system.equipped" type="checkbox" {{checked system.equipped}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isArmor}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.Structure"}}</span><input name="system.structure" type="number" value="{{system.structure}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.Mitigation"}}</span><input name="system.mitigation" type="number" value="{{system.mitigation}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.Weight"}}</span><input name="system.weight" type="number" value="{{system.weight}}" min="0" step="0.1" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Equipped"}}</span><input name="system.equipped" type="checkbox" {{checked system.equipped}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isImplant}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.SlotCost"}}</span><input name="system.slotCost" type="number" value="{{system.slotCost}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.ActionCost"}}</span><input name="system.actionCost" type="number" value="{{system.actionCost}}" min="0" max="4" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Active"}}</span><input name="system.active" type="checkbox" {{checked system.active}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isGenetic}}
+          <section class="resource-grid">
+            <label><span>{{localize "CORPUS.Item.LimitCost"}}</span><input name="system.limitCost" type="number" value="{{system.limitCost}}" min="0" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Active"}}</span><input name="system.active" type="checkbox" {{checked system.active}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isCondition}}
+          <section class="resource-grid">
+            <label>
+              <span>{{localize "CORPUS.Item.ConditionCategory"}}</span>
+              <select name="system.category">
+                {{#each conditionCategories as |option|}}
+                  <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+            <label><span>{{localize "CORPUS.Item.Duration"}}</span><input name="system.duration" type="text" value="{{system.duration}}" placeholder="{{localize 'CORPUS.Item.DurationPlaceholder'}}" /></label>
+            <label class="checkbox-row"><span>{{localize "CORPUS.Item.Active"}}</span><input name="system.active" type="checkbox" {{checked system.active}} /></label>
+          </section>
+        {{/if}}
+
+        {{#if isManeuver}}
+          <section class="resource-grid">
+            <label>
+              <span>{{localize "CORPUS.Item.ManeuverType"}}</span>
+              <select name="system.maneuverType">
+                {{#each maneuverTypes as |option|}}
+                  <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+            <label><span>{{localize "CORPUS.Item.ActionCost"}}</span><input name="system.actionCost" type="number" value="{{system.actionCost}}" min="0" max="4" /></label>
+            <label><span>{{localize "CORPUS.Item.BP"}}</span><input name="system.bp" type="number" value="{{system.bp}}" min="0" /></label>
+            <label><span>{{localize "CORPUS.Item.Accuracy"}}</span><input name="system.accuracy" type="number" value="{{system.accuracy}}" /></label>
+          </section>
+        {{/if}}
+        </fieldset>
+      </section>
+    </section>
+  </section>
+</form>

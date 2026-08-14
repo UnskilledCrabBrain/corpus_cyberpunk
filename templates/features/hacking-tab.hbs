@@ -1,0 +1,82 @@
+<div class="hacking-console">
+  <header>
+    <h3>{{labels.title}}</h3>
+    <button type="button" class="hacking-roll" data-action="rollHacking">
+      <i class="fa-solid fa-dice-d10"></i>
+      <span>{{labels.roll}}</span>
+      <strong>{{formula}}</strong>
+    </button>
+  </header>
+
+  <div class="hacking-settings hacking-action-row">
+    <label>
+      <span>{{labels.action}}</span>
+      <select name="system.hacking.action">
+        {{#each actionOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <div class="hacking-summary">
+      <span>{{labels.apCost}}</span>
+      <strong>{{selectedAction.apCost}}</strong>
+      <small>{{labels.risk}}: {{selectedAction.risk}}</small>
+    </div>
+  </div>
+
+  <div class="hacking-grid">
+    <label class="hacking-resource">
+      <span>{{labels.trace}}</span>
+      <div class="resource-values">
+        <input name="system.hacking.trace.value" type="number" value="{{trace.value}}" min="{{trace.min}}" />
+        <b>/</b>
+        <input name="system.hacking.trace.max" type="number" value="{{trace.max}}" min="0" />
+      </div>
+      <meter min="0" max="100" value="{{tracePercent}}"></meter>
+    </label>
+
+    <label class="hacking-resource">
+      <span>{{labels.heat}}</span>
+      <div class="resource-values">
+        <input name="system.hacking.heat.value" type="number" value="{{heat.value}}" min="{{heat.min}}" />
+        <b>/</b>
+        <input name="system.hacking.heat.max" type="number" value="{{heat.max}}" min="0" />
+      </div>
+      <meter min="0" max="100" value="{{heatPercent}}"></meter>
+    </label>
+
+    <label class="hacking-resource">
+      <span>{{labels.cpu}}</span>
+      <div class="resource-values">
+        <input name="system.hacking.cpu.value" type="number" value="{{cpu.value}}" min="{{cpu.min}}" />
+        <b>/</b>
+        <input name="system.hacking.cpu.max" type="number" value="{{cpu.max}}" min="0" />
+      </div>
+      <meter min="0" max="100" value="{{cpuPercent}}"></meter>
+    </label>
+  </div>
+
+  <div class="hacking-settings">
+    <label>
+      <span>{{labels.baseDifficulty}}</span>
+      <input name="system.hacking.targetDefense" type="number" value="{{targetDefense}}" min="0" />
+    </label>
+    <label>
+      <span>{{labels.modifier}}</span>
+      <input name="system.hacking.modifier" type="number" value="{{modifier}}" />
+    </label>
+    <label>
+      <span>{{labels.access}}</span>
+      <select name="system.hacking.access">
+        {{#each accessOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+    <div class="hacking-summary">
+      <span>{{labels.effectiveDifficulty}}</span>
+      <strong>{{effectiveDifficulty}}</strong>
+      <small>{{labels.formula}}: {{formula}}</small>
+    </div>
+  </div>
+</div>

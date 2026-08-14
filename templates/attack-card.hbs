@@ -1,0 +1,35 @@
+<article class="corpus-chat-card corpus-attack-card">
+  <header>
+    <div>
+      <strong>{{weapon}}</strong>
+      <span>{{labels.Attack}}</span>
+    </div>
+    <span>{{attacker}}</span>
+  </header>
+  <section class="corpus-roll-summary">
+    <div class="corpus-roll-total">
+      <span>{{labels.Attack}}</span>
+      <strong>{{attackTotal}}</strong>
+    </div>
+    <div class="corpus-roll-outcome {{#if unresolved}}is-pending{{else}}{{#if missed}}is-miss{{else}}is-hit{{/if}}{{/if}}">
+      <span>{{labels.Hit}}</span>
+      <strong>{{#if unresolved}}{{labels.Unresolved}}{{else}}{{#if missed}}{{labels.Miss}}{{else}}{{labels.Hit}}{{/if}}{{/if}}</strong>
+    </div>
+  </section>
+  <dl>
+    <dt>{{labels.Target}}</dt><dd>{{target}}</dd>
+    <dt>{{labels.Attacker}}</dt><dd>{{attacker}}</dd>
+    {{#if attackOptions}}
+      <dt>{{labels.AttackOptions}}</dt><dd>{{#each attackOptions as |option|}}{{option}}{{#unless @last}}, {{/unless}}{{/each}}</dd>
+    {{/if}}
+    {{#if actionPointSpend}}
+      <dt>{{labels.ActionPoints}}</dt><dd>{{actionPointSpend.spent}} / {{actionPointSpend.cost}}</dd>
+    {{/if}}
+  </dl>
+  {{#if actionPointSpend.canRefund}}
+    <button type="button" data-corpus-action="refund-ap"><i class="fa-solid fa-rotate-left"></i> {{labels.RefundAP}}</button>
+  {{/if}}
+  {{#if canRollDamage}}
+    <button type="button" data-corpus-action="roll-damage"><i class="fa-solid fa-dice-d10"></i> {{labels.RollDamage}}</button>
+  {{/if}}
+</article>
